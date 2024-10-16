@@ -10,7 +10,6 @@ let routes = (app) => {
 	router.put(`${URL}/:id/rename`, files.rename);
 	router.delete(`${URL}/:id/delete`, files.delete);
 
-	app.use("/uploads", express.static("resources"));
 	app.use(router);
 };
 
