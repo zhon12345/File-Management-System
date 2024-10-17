@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from "vue";
 import { useFileStore } from "@/stores/FileStore";
 
 const fileStore = useFileStore();
@@ -7,6 +8,8 @@ const props = defineProps({
 	rename: Function,
 	delete: Function,
 });
+
+let imageLoaded = ref(true);
 
 async function downloadFile(file) {
 	await fileStore.downloadFile(file.id, file.name, file.ext);
@@ -21,11 +24,15 @@ function onDelete() {
 }
 
 const fileTypes = {
-	archive: ["zip", "rar", "tar", "7z", "gz"],
-	video: [".mp4", ".m4v", ".mkv", ".avi", ".mov", "wmv", ".flv", ".3g2", ".3gp"],
-	audio: [".mp3", ".wav", ".ogg", ".flac", ".aac", ".aiff", ".sid", ".psf", ".mod", ".mid"],
-	image: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".ico", ".psd"],
-	document: [".txt", ".csv", ".xml", ".json", ".pdf", ".doc", ".docx", ".ppt", ".pptx", ".xls", ".xlsx"],
+	archive: ["zip", "rar", "7z", "tar", "gz"],
+	video: [".mp4", ".m4v", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".3g2", ".3gp", ".webm"],
+	audio: [".mp3", ".wav", ".ogg", ".flac", ".aac", ".aiff", ".mod", ".mid", ".m4a"],
+	image: [".jpg", ".jpeg", ".png", ".webp", ".tif", ".tiff", ".gif", ".bmp"],
+	code: [".html", ".htm", ".xhtml", ".css", ".asm", ".c", ".cpp", ".h", ".cs", ".java", ".py", ".js", ".ts", ".vue", ".rs", ".lua", ".swift", ".r", ".go", ".rb", ".php", ".scala", ".kt", ".dart", ".pl", ".sql", ".m", ".clj", ".coffee", ".svelte"],
+	document: [".txt", ".rtf", ".csv", ".md", ".xaml", ".xml", "yaml", "yml", ".json", ".pdf"],
+	excel: [".xls", ".xlsx"],
+	powerpoint: [".ppt", ".pptx"],
+	word: [".doc", ".docx"],
 };
 
 function isImage(file) {
@@ -34,26 +41,30 @@ function isImage(file) {
 
 function getPreview(file) {
 	const ext = file.ext.toLowerCase();
-	const path = "/src/assets/icons";
+	const icons = {
+		archive: "fa-file-zipper",
+		video: "fa-file-video",
+		audio: "fa-file-audio",
+		image: "fa-file-image",
+		code: "fa-regular fa-file-code",
+		document: "fa-file-lines",
+		excel: "fa-regular fa-file-excel",
+		powerpoint: "fa-regular fa-file-excel",
+		word: "fa-regular fa-file-word",
+		default: "fa-file",
+	};
 
 	for (const [type, extensions] of Object.entries(fileTypes)) {
 		if (extensions.includes(ext)) {
-			switch (type) {
-				case "archive":
-					return `${path}/archive.png`;
-				case "video":
-					return `${path}/video.png`;
-				case "audio":
-					return `${path}/audio.png`;
-				case "image":
-					return fileStore.viewFile(file.id);
-				case "document":
-					return `${path}/document.png`;
+			if (type === "image" && imageLoaded.value) {
+				return fileStore.viewFile(file.id);
+			} else {
+				return icons[type] || icons.default;
 			}
 		}
 	}
 
-	return `${path}/file.png`;
+	return icons.default;
 }
 </script>
 
@@ -71,8 +82,9 @@ function getPreview(file) {
 				</ul>
 			</div>
 		</div>
-		<div class="card-img" :class="{ 'is-icon': !isImage(file) }">
-			<img class="card-img-top card-img-bottom user-select-none" draggable="false" :src="getPreview(file)" />
+		<div class="card-img" :class="{ 'is-icon': !isImage(file) || !imageLoaded }">
+			<img v-if="isImage(file) && imageLoaded" class="card-img-top card-img-bottom user-select-none" draggable="false" :src="getPreview(file)" @load="imageLoaded = true" @error="imageLoaded = false" />
+			<i v-else :class="getPreview(file)" class="fa-regular"></i>
 		</div>
 	</div>
 </template>
@@ -109,16 +121,21 @@ function getPreview(file) {
 .card-img {
 	max-height: 200px;
 	min-height: 200px;
-	display: flex;
-	justify-content: center;
+	background-color: #d2d8de;
 }
 
-.card-img.is-icon img {
-	width: 100px;
-	object-fit: contain;
+.is-icon {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .card-img > img {
+	height: 100%;
 	object-fit: cover;
+}
+
+.fa-regular {
+	font-size: 5em;
 }
 </style>
