@@ -10,6 +10,10 @@ const query = ref("");
 const input = ref("");
 const valid = ref(true);
 
+const props = defineProps({
+	disabled: { type: Boolean, default: false },
+});
+
 async function uploadFile(event) {
 	const files = event.target.files;
 	const formData = new FormData();
@@ -70,14 +74,14 @@ onMounted(() => {
 <template>
 	<nav class="navbar sticky-top">
 		<div class="container">
-			<a href="" class="navbar-brand user-select-none">File Management System</a>
+			<router-link :to="{ name: 'home' }" class="navbar-brand user-select-none">File Management System</router-link>
 
 			<div class="search">
-				<input v-model="query" @keypress.enter="search" class="form-control" type="search" placeholder="Search" aria-label="Search" />
+				<input v-model="query" @keypress.enter="search" class="form-control" type="search" placeholder="Search" aria-label="Search" :disabled="disabled" />
 			</div>
 
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">New</button>
+				<button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled">New</button>
 				<ul class="dropdown-menu">
 					<li><button @click="openModal" class="dropdown-item disabled" aria-disabled="true">Folder</button></li>
 
