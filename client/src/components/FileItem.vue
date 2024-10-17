@@ -1,5 +1,5 @@
 <script setup>
-import { useFileStore } from "@/stores/file";
+import { useFileStore } from "@/stores/FileStore";
 
 const fileStore = useFileStore();
 const props = defineProps({

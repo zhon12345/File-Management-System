@@ -7,7 +7,7 @@ const http = axios.create({
 	baseURL: baseURL,
 });
 
-class FileDataService {
+class FileService {
 	upload(data) {
 		return http.post(`${URL}/upload`, data);
 	}
@@ -39,4 +39,4 @@ class FileDataService {
 	}
 }
 
-export default new FileDataService();
+export default new FileService();

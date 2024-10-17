@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import FileDataService from "@/services/FileDataService";
+import FileService from "@/services/FileService";
 
 export const useFileStore = defineStore("file", {
 	state: () => ({
@@ -8,7 +8,7 @@ export const useFileStore = defineStore("file", {
 	actions: {
 		async fetchFiles() {
 			try {
-				const response = await FileDataService.getAll();
+				const response = await FileService.getAll();
 				this.files = response.data;
 			} catch (err) {
 				console.log(`Error fetching files: ${err.message}`);
@@ -16,7 +16,7 @@ export const useFileStore = defineStore("file", {
 		},
 		async uploadFiles(formData) {
 			try {
-				await FileDataService.upload(formData);
+				await FileService.upload(formData);
 				await this.fetchFiles();
 			} catch (err) {
 				console.log(`Error uploading file: ${err.message}`);
@@ -24,7 +24,7 @@ export const useFileStore = defineStore("file", {
 		},
 		async searchFiles(query) {
 			try {
-				const response = await FileDataService.search(query);
+				const response = await FileService.search(query);
 				this.files = response.data;
 			} catch (err) {
 				console.log(`Error searching files: ${err.message}`);
@@ -32,7 +32,7 @@ export const useFileStore = defineStore("file", {
 		},
 		async downloadFile(id, name, ext) {
 			try {
-				const response = await FileDataService.download(id);
+				const response = await FileService.download(id);
 
 				const url = window.URL.createObjectURL(new Blob([response.data]));
 
@@ -50,11 +50,11 @@ export const useFileStore = defineStore("file", {
 			}
 		},
 		viewFile(id) {
-			return FileDataService.view(id);
+			return FileService.view(id);
 		},
 		async renameFile(id, name) {
 			try {
-				await FileDataService.rename(id, name);
+				await FileService.rename(id, name);
 				await this.fetchFiles();
 			} catch (err) {
 				console.log(`Error renaming file: ${err.message}`);
@@ -62,7 +62,7 @@ export const useFileStore = defineStore("file", {
 		},
 		async deleteFile(id) {
 			try {
-				await FileDataService.delete(id);
+				await FileService.delete(id);
 				await this.fetchFiles();
 			} catch (err) {
 				console.log(`Error deleting file: ${err.message}`);

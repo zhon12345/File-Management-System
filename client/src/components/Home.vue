@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
 import { Modal } from "bootstrap";
-import { useFileStore } from "@/stores/file";
+import { useFileStore } from "@/stores/FileStore";
 import FileItem from "@/components/FileItem.vue";
 import Dialog from "@/components/Modal.vue";
 
