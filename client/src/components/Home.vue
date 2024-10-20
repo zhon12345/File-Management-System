@@ -104,7 +104,7 @@ onMounted(async () => {
 				<span class="visually-hidden">Loading...</span>
 			</div>
 			<div v-else-if="fileStore.files.length === 0">
-				<i class="fa-regular fa-folder-open"></i>
+				<i class="bi bi-folder2-open"></i>
 				<span>No Files Found...</span>
 			</div>
 			<div v-else class="row row-cols-lg-5 row-cols-md-3 row-cols-2 gx-3">
@@ -162,7 +162,7 @@ onMounted(async () => {
 	flex-direction: column;
 }
 
-.fa-folder-open {
+.bi-folder2-open {
 	align-self: center;
 	margin-bottom: 0.5rem;
 	font-size: clamp(2rem, 4vw, 3.5rem);
