@@ -22,7 +22,11 @@
 	width: 50%;
 }
 
+.message > h1 {
+	font-size: clamp(1.5rem, 5vw, 2.5rem);
+}
+
 .message > p {
-	font-size: 24px;
+	font-size: clamp(1rem, 3vw, 1.5rem);
 }
 </style>

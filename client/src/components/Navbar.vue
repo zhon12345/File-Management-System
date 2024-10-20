@@ -72,17 +72,20 @@ onMounted(() => {
 </script>
 
 <template>
-	<nav class="navbar sticky-top">
+	<nav class="navbar navbar-expand-lg sticky-top">
 		<div class="container">
 			<router-link :to="{ name: 'home' }" class="navbar-brand user-select-none">File Management System</router-link>
 
-			<div class="search">
-				<input v-model="query" @keypress.enter="search" class="form-control" type="search" placeholder="Search" aria-label="Search" :disabled="disabled" />
+			<div class="collapse navbar-collapse">
+				<div class="search input-group">
+					<input v-model="query" @keypress.enter="search" class="form-control" type="search" placeholder="Search" aria-label="Search" :disabled="disabled" />
+					<button @click="search" class="btn btn-outline-primary" type="button" :disabled="disabled"><i class="fa-solid fa-magnifying-glass"></i></button>
+				</div>
 			</div>
 
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled">New</button>
-				<ul class="dropdown-menu">
+				<button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled"><i class="fa-solid fa-plus"></i> New</button>
+				<ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
 					<li><button @click="openModal" class="dropdown-item disabled" aria-disabled="true">Folder</button></li>
 
 					<li><hr class="dropdown-divider" /></li>

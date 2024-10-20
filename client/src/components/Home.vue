@@ -18,6 +18,7 @@ let modalConfig = ref({
 	filename: "",
 	message: "",
 	button: "",
+	action: "",
 });
 
 function openModal(file, config) {
@@ -33,6 +34,7 @@ function renameModal(file) {
 		form: true,
 		filename: file.name,
 		button: "Rename",
+		action: "rename",
 	});
 }
 
@@ -40,8 +42,9 @@ function deleteModal(file) {
 	openModal(file, {
 		title: "Delete file",
 		form: false,
-		message: `"${file.name}" will be deleted forever, are you sure?`,
+		message: `"${file.name}" will be deleted <strong>forever</strong>, are you sure?`,
 		button: "Delete forever",
+		action: "delete",
 	});
 }
 
@@ -96,16 +99,19 @@ onMounted(async () => {
 			</nav>
 		</div>
 
-		<div class="container files text-center">
+		<div class="container files" :class="{ 'no-content': loading || fileStore.files.length === 0 }">
 			<div v-if="loading" class="spinner-border text-primary" role="status">
 				<span class="visually-hidden">Loading...</span>
 			</div>
 			<div v-else-if="fileStore.files.length === 0">
+				<i class="fa-regular fa-folder-open"></i>
 				<span>No Files Found...</span>
 			</div>
-			<div v-else class="row row-cols-lg-5 row-cols-md-3 row-cols-2 g-3">
-				<div v-for="file in fileStore.files" :key="file.id" class="div col">
-					<FileItem :file="file" :rename="renameModal" :delete="deleteModal" />
+			<div v-else class="row row-cols-lg-5 row-cols-md-3 row-cols-2 gx-3">
+				<div v-for="file in fileStore.files" :key="file.id" class="col">
+					<div class="ratio ratio-1x1">
+						<FileItem :file="file" :rename="renameModal" :delete="deleteModal" />
+					</div>
 				</div>
 			</div>
 		</div>
@@ -120,11 +126,11 @@ onMounted(async () => {
 					<input v-model="modalConfig.filename" class="form-control" type="text" ref="input" :class="{ 'is-invalid': !valid }" />
 				</div>
 
-				<p v-else>{{ modalConfig.message }}</p>
+				<p v-else v-html="modalConfig.message"></p>
 			</template>
 
 			<template #footer>
-				<button @click="handleConfirm({ filename: modalConfig.filename })" class="btn btn-primary">{{ modalConfig.button }}</button>
+				<button @click="handleConfirm({ filename: modalConfig.filename })" class="btn" :class="modalConfig.action === 'delete' ? 'btn-danger' : 'btn-primary'">{{ modalConfig.button }}</button>
 			</template>
 		</Dialog>
 	</section>
@@ -139,11 +145,34 @@ onMounted(async () => {
 	font-size: 24px;
 }
 
-.files > div {
-	margin-top: 5rem;
+.no-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 85vh;
 }
 
-.row {
-	margin-top: 0 !important;
+.spinner-border {
+	width: 2.75rem;
+	height: 2.75rem;
+}
+
+.no-content > div {
+	display: flex;
+	flex-direction: column;
+}
+
+.fa-folder-open {
+	align-self: center;
+	margin-bottom: 0.5rem;
+	font-size: clamp(2rem, 4vw, 3.5rem);
+}
+
+.no-content span {
+	font-size: clamp(1rem, 3vw, 1.5rem);
+}
+
+.col {
+	margin-bottom: 1rem;
 }
 </style>

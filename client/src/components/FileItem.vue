@@ -46,11 +46,11 @@ function getPreview(file) {
 		video: "fa-file-video",
 		audio: "fa-file-audio",
 		image: "fa-file-image",
-		code: "fa-regular fa-file-code",
+		code: "fa-file-code",
 		document: "fa-file-lines",
 		excel: "fa-regular fa-file-excel",
-		powerpoint: "fa-regular fa-file-excel",
-		word: "fa-regular fa-file-word",
+		powerpoint: "fa-file-excel",
+		word: "fa-file-word",
 		default: "fa-file",
 	};
 
@@ -73,7 +73,7 @@ function getPreview(file) {
 		<div class="card-body">
 			<p class="card-text text-truncate user-select-none">{{ file.name }}{{ file.ext }}</p>
 			<div class="dropdown">
-				<i class="fa-solid fa-ellipsis-vertical dropdown-toggle px-2" data-bs-toggle="dropdown" aria-expanded="false"></i>
+				<i class="fa-solid fa-ellipsis-vertical dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></i>
 
 				<ul class="dropdown-menu">
 					<li><button @click="downloadFile(file)" class="dropdown-item">Download</button></li>
@@ -82,6 +82,7 @@ function getPreview(file) {
 				</ul>
 			</div>
 		</div>
+
 		<div class="card-img" :class="{ 'is-icon': !isImage(file) || !imageLoaded }">
 			<img v-if="isImage(file) && imageLoaded" class="card-img-top card-img-bottom user-select-none" draggable="false" :src="getPreview(file)" @load="imageLoaded = true" @error="imageLoaded = false" />
 			<i v-else :class="getPreview(file)" class="fa-regular"></i>
@@ -91,8 +92,6 @@ function getPreview(file) {
 
 <style>
 .card {
-	font-size: 18px;
-	justify-content: space-between;
 	padding: 0.5rem;
 	border: none;
 }
@@ -100,27 +99,30 @@ function getPreview(file) {
 .card-body {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	padding: 0;
+	margin-bottom: 0.5rem;
 }
 
-.fa-solid {
+.card-body > p {
+	margin-bottom: 0;
+	font-size: clamp(1rem, 2vw, 1.15rem);
+}
+
+.fa-ellipsis-vertical {
 	font-size: 20px;
-	align-self: center;
+	padding-left: 0.5rem;
 	cursor: pointer;
 	transition: 0.1s ease-in;
 }
 
-.fa-solid.dropdown-toggle::after {
-	content: none;
-}
-
-.fa-solid:hover {
+.fa-ellipsis-vertical:hover {
 	opacity: 0.7;
 }
 
 .card-img {
-	max-height: 200px;
-	min-height: 200px;
+	max-height: 80%;
+	min-height: 80%;
 	background-color: #d2d8de;
 }
 
@@ -135,7 +137,7 @@ function getPreview(file) {
 	object-fit: cover;
 }
 
-.fa-regular {
-	font-size: 5em;
+.card-img .fa-regular {
+	font-size: clamp(3em, 5vw, 5em);
 }
 </style>

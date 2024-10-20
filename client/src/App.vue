@@ -10,3 +10,9 @@ const route = useRoute();
 
 	<RouterView />
 </template>
+
+<style>
+.dropdown-toggle::after {
+	content: none;
+}
+</style>
