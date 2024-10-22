@@ -15,7 +15,7 @@ The client side code for the **File Management System**, built using **Vue.js**,
 -   [ ] **Dark Mode**: Automatically detect and use default system theme.
 -   [ ] **Responsive Design:** Ensure usability across different devices and screen sizes.
 -   [ ] **Folder Support:** Allow users to create and upload folders for better organization.
--   [ ] **Grid & List View:** Add option to toggle between list and grid view.
+-   [x] **Grid & List View:** Add option to toggle between list and grid view.
 -   [ ] **View File Information:** Allow detailed information about upload files to be viewed.
 -   [ ] **Sort & Filter Files:** Implement sorting and filtering by various criteria.
 -   [ ] **Upload/Download Indicators:** Display visual progress bars for file uploads and downloads.

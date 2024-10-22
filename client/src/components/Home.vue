@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, computed } from "vue";
 import { Modal } from "bootstrap";
 import { useFileStore } from "@/stores/FileStore";
-import FileItem from "@/components/FileItem.vue";
+import GridView from "@/components/Files/GridView.vue";
+import ListView from "@/components/Files/ListView.vue";
 import Dialog from "@/components/Modal.vue";
 
 const fileStore = useFileStore();
@@ -11,6 +12,9 @@ const dialog = ref(null);
 let input = ref(null);
 let currFile = ref(null);
 const valid = ref(true);
+const viewMode = ref("grid");
+
+const isGrid = computed(() => viewMode.value === "grid");
 
 let modalConfig = ref({
 	title: "",
@@ -97,23 +101,27 @@ onMounted(async () => {
 					<li class="breadcrumb-item active" aria-current="page">Home</li>
 				</ol>
 			</nav>
+
+			<div class="btn-group" role="group" aria-label="Grid and List view toggle">
+				<input type="radio" class="btn-check" name="View Toggle" id="grid" autocomplete="off" v-model="viewMode" value="grid" />
+				<label for="grid" class="btn btn-outline-primary"> <i class="bi bi-grid-fill"></i> Grid </label>
+
+				<input type="radio" class="btn-check" name="View Toggle" id="list" autocomplete="off" v-model="viewMode" value="list" />
+				<label for="list" class="btn btn-outline-primary"> <i class="bi bi-list-task"></i> List </label>
+			</div>
 		</div>
 
 		<div class="container files" :class="{ 'no-content': loading || fileStore.files.length === 0 }">
 			<div v-if="loading" class="spinner-border text-primary" role="status">
 				<span class="visually-hidden">Loading...</span>
 			</div>
+
 			<div v-else-if="fileStore.files.length === 0">
 				<i class="bi bi-folder2-open"></i>
 				<span>No Files Found...</span>
 			</div>
-			<div v-else class="row row-cols-lg-5 row-cols-md-3 row-cols-2 gx-3">
-				<div v-for="file in fileStore.files" :key="file.id" class="col">
-					<div class="ratio ratio-1x1">
-						<FileItem :file="file" :rename="renameModal" :delete="deleteModal" />
-					</div>
-				</div>
-			</div>
+
+			<component v-else :is="isGrid ? GridView : ListView" :files="fileStore.files" :rename="renameModal" :delete="deleteModal" />
 		</div>
 
 		<Dialog id="fileItem">
@@ -136,9 +144,16 @@ onMounted(async () => {
 	</section>
 </template>
 
-<style>
+<style scoped>
 .path {
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 1rem;
+}
+
+.breadcrumb {
 	font-weight: bold;
+	margin-bottom: 0rem;
 }
 
 .breadcrumb-item {
@@ -170,9 +185,5 @@ onMounted(async () => {
 
 .no-content span {
 	font-size: clamp(1rem, 3vw, 1.5rem);
-}
-
-.col {
-	margin-bottom: 1rem;
 }
 </style>
