@@ -3,7 +3,7 @@
 		<thead>
 			<tr>
 				<th class="col-name">Name</th>
-				<th class="col-modified">Last Modified</th>
+				<th v-if="!isMobile" class="col-modified">Last Modified</th>
 				<th class="col-size">Size</th>
 				<th class="col-option text-end">
 					<i class="bi bi-three-dots-vertical"></i>
@@ -17,11 +17,11 @@
 						<i :class="getPreview(file, 'list')" class="bi"></i>
 						<div class="text">
 							<p class="title text-truncate">{{ file.name }}{{ file.ext }}</p>
-							<small class="subtitle">Modified {{ formatDate(file.updated, true) }}</small>
+							<small v-if="isMobile" class="subtitle">Modified {{ formatDate(file.updated, true) }}</small>
 						</div>
 					</div>
 				</td>
-				<td class="col-modified content">{{ formatDate(file.updated) }}</td>
+				<td v-if="!isMobile" class="col-modified content">{{ formatDate(file.updated) }}</td>
 				<td class="col-size content">{{ calcSize(file.size) }}</td>
 				<td class="col-option content dropdown text-end">
 					<FileItem :file="file" :actions="{ rename: props.rename, delete: props.delete }"></FileItem>
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { getPreview, formatDate, calcSize } from "@/utils/fileUtils";
+import { isMobile, getPreview, formatDate, calcSize } from "@/utils/fileUtils";
 import FileItem from "@/components/Files/FileItem.vue";
 
 const props = defineProps({
@@ -82,23 +82,9 @@ thead .col-option {
 		width: 55%;
 	}
 
-	.col-modified {
-		display: none;
-	}
-
 	.text {
 		display: flex;
 		flex-direction: column;
-	}
-
-	.subtitle {
-		display: inline;
-	}
-}
-
-@media (min-width: 768px) {
-	.subtitle {
-		display: none;
 	}
 }
 </style>

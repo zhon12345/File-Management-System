@@ -1,8 +1,12 @@
-import { computed, ref } from "vue";
+import { ref, computed } from "vue";
 import { useFileStore } from "@/stores/FileStore";
+import { useScreenStore } from "@/stores/ScreenStore";
 
 const fileStore = useFileStore();
+const ScreenStore = useScreenStore();
+
 export let imageLoaded = ref(true);
+export let isMobile = computed(() => ScreenStore.isMobile);
 
 const fileTypes = {
 	archive: ["zip", "rar", "7z", "tar", "gz"],

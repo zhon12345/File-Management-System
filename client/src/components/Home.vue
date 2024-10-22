@@ -1,19 +1,23 @@
 <script setup>
 import { ref, watch, onMounted, computed } from "vue";
 import { Modal } from "bootstrap";
+
 import { useFileStore } from "@/stores/FileStore";
+import { useScreenStore } from "@/stores/ScreenStore";
+
 import GridView from "@/components/Files/GridView.vue";
 import ListView from "@/components/Files/ListView.vue";
 import Dialog from "@/components/Modal.vue";
 
 const fileStore = useFileStore();
+const screenStore = useScreenStore();
+
 const loading = ref(true);
 const dialog = ref(null);
 let input = ref(null);
 let currFile = ref(null);
 const valid = ref(true);
 const viewMode = ref("grid");
-
 const isGrid = computed(() => viewMode.value === "grid");
 
 let modalConfig = ref({
@@ -102,12 +106,14 @@ onMounted(async () => {
 				</ol>
 			</nav>
 
-			<div class="btn-group" role="group" aria-label="Grid and List view toggle">
-				<input type="radio" class="btn-check" name="View Toggle" id="grid" autocomplete="off" v-model="viewMode" value="grid" />
-				<label for="grid" class="btn btn-outline-primary"> <i class="bi bi-grid-fill"></i> Grid </label>
+			<div>
+				<div :class="['btn-group', { 'btn-group-sm': screenStore.isMobile }]" role="group" aria-label="Grid and List view toggle">
+					<input type="radio" class="btn-check" name="View Toggle" id="grid" autocomplete="off" v-model="viewMode" value="grid" />
+					<label for="grid" class="btn btn-outline-primary"> <i class="bi bi-grid-fill"></i> Grid </label>
 
-				<input type="radio" class="btn-check" name="View Toggle" id="list" autocomplete="off" v-model="viewMode" value="list" />
-				<label for="list" class="btn btn-outline-primary"> <i class="bi bi-list-task"></i> List </label>
+					<input type="radio" class="btn-check" name="View Toggle" id="list" autocomplete="off" v-model="viewMode" value="list" />
+					<label for="list" class="btn btn-outline-primary"> <i class="bi bi-list-task"></i> List </label>
+				</div>
 			</div>
 		</div>
 
@@ -148,6 +154,7 @@ onMounted(async () => {
 .path {
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	margin-bottom: 1rem;
 }
 
@@ -157,7 +164,7 @@ onMounted(async () => {
 }
 
 .breadcrumb-item {
-	font-size: 24px;
+	font-size: clamp(0.5rem, 2vw + 1rem, 1.5rem);
 }
 
 .no-content {

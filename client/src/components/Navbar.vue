@@ -1,18 +1,23 @@
 <script setup>
-import { ref, watch, onMounted } from "vue";
 import { Modal } from "bootstrap";
+import { ref, watch, onMounted } from "vue";
+
 import { useFileStore } from "@/stores/FileStore";
+import { useScreenStore } from "@/stores/ScreenStore";
+
 import Dialog from "@/components/Modal.vue";
 
 const fileStore = useFileStore();
-const dialog = ref(null);
-const query = ref("");
-const input = ref("");
-const valid = ref(true);
+const screenStore = useScreenStore();
 
 const props = defineProps({
 	disabled: { type: Boolean, default: false },
 });
+
+const dialog = ref(null);
+const query = ref("");
+const input = ref("");
+const valid = ref(true);
 
 async function uploadFile(event) {
 	const files = event.target.files;
@@ -74,7 +79,7 @@ onMounted(() => {
 <template>
 	<nav class="navbar navbar-expand-lg sticky-top">
 		<div class="container">
-			<router-link :to="{ name: 'home' }" class="navbar-brand user-select-none">File Management System</router-link>
+			<router-link :to="{ name: 'home' }" class="navbar-brand text-truncate user-select-none">File Management System</router-link>
 
 			<div class="collapse navbar-collapse">
 				<div class="search input-group">
@@ -84,8 +89,8 @@ onMounted(() => {
 			</div>
 
 			<div class="dropdown">
-				<button class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled"><i class="bi bi-plus-lg"></i> New</button>
-				<ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
+				<button :class="['btn btn-primary dropdown-toggle', { 'btn-sm': screenStore.isMobile }]" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled"><i class="bi bi-plus-lg"></i> New</button>
+				<ul class="dropdown-menu dropdown-menu-end">
 					<li><button @click="openModal" class="dropdown-item disabled" aria-disabled="true">Folder</button></li>
 
 					<li><hr class="dropdown-divider" /></li>
@@ -115,7 +120,7 @@ onMounted(() => {
 	</Dialog>
 </template>
 
-<style>
+<style scoped>
 .navbar {
 	background-color: white;
 }
@@ -126,5 +131,9 @@ onMounted(() => {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+
+.container {
+	flex-wrap: nowrap;
 }
 </style>
