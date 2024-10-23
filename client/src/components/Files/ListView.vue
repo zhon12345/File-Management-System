@@ -11,7 +11,7 @@
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
-			<tr v-for="file in files" :keys="file.id">
+			<tr v-for="file in files">
 				<td class="col-name content">
 					<div class="d-flex align-items-center">
 						<i :class="getPreview(file, 'list')" class="bi"></i>
@@ -24,7 +24,7 @@
 				<td v-if="!isMobile" class="col-modified content">{{ formatDate(file.updated) }}</td>
 				<td class="col-size content">{{ calcSize(file.size) }}</td>
 				<td class="col-option content dropdown text-end">
-					<FileItem :file="file" :actions="{ rename: props.rename, delete: props.delete }"></FileItem>
+					<FileItem :file="file" :openModal="action"></FileItem>
 				</td>
 			</tr>
 		</tbody>
@@ -37,8 +37,7 @@ import FileItem from "@/components/Files/FileItem.vue";
 
 const props = defineProps({
 	files: Array,
-	rename: Function,
-	delete: Function,
+	action: Function,
 });
 </script>
 

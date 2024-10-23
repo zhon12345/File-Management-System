@@ -1,5 +1,3 @@
-<script setup></script>
-
 <template>
 	<div class="container not-found text-center">
 		<div class="message">
@@ -10,7 +8,9 @@
 	</div>
 </template>
 
-<style>
+<script setup></script>
+
+<style scoped>
 .not-found {
 	display: flex;
 	justify-content: center;

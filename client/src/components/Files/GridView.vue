@@ -1,12 +1,12 @@
 <template>
 	<div class="row row-cols-lg-5 row-cols-md-3 row-cols-2 gx-3">
-		<div v-for="file in files" :key="file.id" class="col">
+		<div v-for="file in files" class="col">
 			<div class="ratio ratio-1x1">
 				<div class="card shadow-sm bg-body-secondary">
 					<div class="card-body">
 						<p class="card-text text-truncate user-select-none">{{ file.name }}{{ file.ext }}</p>
 						<div class="dropdown">
-							<FileItem :file="file" :actions="{ rename: props.rename, delete: props.delete }"></FileItem>
+							<FileItem :file="file" :openModal="action"></FileItem>
 						</div>
 					</div>
 
@@ -26,8 +26,7 @@ import FileItem from "@/components/Files/FileItem.vue";
 
 const props = defineProps({
 	files: Array,
-	rename: Function,
-	delete: Function,
+	action: Function,
 });
 </script>
 

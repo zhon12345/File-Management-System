@@ -1,102 +1,3 @@
-<script setup>
-import { ref, watch, onMounted, computed } from "vue";
-import { Modal } from "bootstrap";
-
-import { useFileStore } from "@/stores/FileStore";
-import { useScreenStore } from "@/stores/ScreenStore";
-
-import GridView from "@/components/Files/GridView.vue";
-import ListView from "@/components/Files/ListView.vue";
-import Dialog from "@/components/Modal.vue";
-
-const fileStore = useFileStore();
-const screenStore = useScreenStore();
-
-const loading = ref(true);
-const dialog = ref(null);
-let input = ref(null);
-let currFile = ref(null);
-const valid = ref(true);
-const viewMode = ref("grid");
-const isGrid = computed(() => viewMode.value === "grid");
-
-let modalConfig = ref({
-	title: "",
-	form: false,
-	filename: "",
-	message: "",
-	button: "",
-	action: "",
-});
-
-function openModal(file, config) {
-	currFile.value = file;
-	modalConfig.value = { ...config };
-	dialog.value.show();
-	valid.value = true;
-}
-
-function renameModal(file) {
-	openModal(file, {
-		title: "Rename file",
-		form: true,
-		filename: file.name,
-		button: "Rename",
-		action: "rename",
-	});
-}
-
-function deleteModal(file) {
-	openModal(file, {
-		title: "Delete file",
-		form: false,
-		message: `"${file.name}" will be deleted <strong>forever</strong>, are you sure?`,
-		button: "Delete forever",
-		action: "delete",
-	});
-}
-
-async function handleConfirm(value) {
-	if (modalConfig.value.form) {
-		if (value.filename && value.filename.trim()) {
-			await fileStore.renameFile(currFile.value.id, value.filename);
-			dialog.value.hide();
-		}
-
-		valid.value = false;
-	} else {
-		await fileStore.deleteFile(currFile.value.id);
-		dialog.value.hide();
-	}
-}
-
-watch(
-	modalConfig,
-	(value) => {
-		if (value.filename && value.filename.trim()) {
-			valid.value = true;
-		} else {
-			valid.value = false;
-		}
-	},
-	{ deep: true }
-);
-
-onMounted(async () => {
-	dialog.value = new Modal(document.getElementById("fileItem"), {});
-
-	await fileStore.fetchFiles();
-	loading.value = false;
-
-	dialog.value._element.addEventListener("shown.bs.modal", () => {
-		if (input.value) {
-			input.value.focus();
-			input.value.select();
-		}
-	});
-});
-</script>
-
 <template>
 	<section class="main">
 		<div class="container path user-select-none">
@@ -117,17 +18,17 @@ onMounted(async () => {
 			</div>
 		</div>
 
-		<div class="container files" :class="{ 'no-content': loading || fileStore.files.length === 0 }">
+		<div class="container files" :class="{ 'no-content': loading || files.length === 0 }">
 			<div v-if="loading" class="spinner-border text-primary" role="status">
 				<span class="visually-hidden">Loading...</span>
 			</div>
 
-			<div v-else-if="fileStore.files.length === 0">
+			<div v-else-if="files.length === 0">
 				<i class="bi bi-folder2-open"></i>
 				<span>No Files Found...</span>
 			</div>
 
-			<component v-else :is="isGrid ? GridView : ListView" :files="fileStore.files" :rename="renameModal" :delete="deleteModal" />
+			<component v-else :is="viewMode === 'grid' ? GridView : ListView" :files="files" :action="openModal" />
 		</div>
 
 		<Dialog id="fileItem">
@@ -137,18 +38,107 @@ onMounted(async () => {
 
 			<template #body>
 				<div v-if="modalConfig.form">
-					<input v-model="modalConfig.filename" class="form-control" type="text" ref="input" :class="{ 'is-invalid': !valid }" />
+					<input v-model="tempFile" class="form-control" type="text" ref="input" :class="{ 'is-invalid': !isValid }" />
 				</div>
 
 				<p v-else v-html="modalConfig.message"></p>
 			</template>
 
 			<template #footer>
-				<button @click="handleConfirm({ filename: modalConfig.filename })" class="btn" :class="modalConfig.action === 'delete' ? 'btn-danger' : 'btn-primary'">{{ modalConfig.button }}</button>
+				<button @click="handleConfirm()" class="btn" :class="modalConfig.action === 'delete' ? 'btn-danger' : 'btn-primary'">{{ modalConfig.button }}</button>
 			</template>
 		</Dialog>
 	</section>
 </template>
+
+<script setup>
+import { ref, onMounted, computed } from "vue";
+import { Modal } from "bootstrap";
+
+import { useFileStore } from "@/stores/FileStore";
+import { useScreenStore } from "@/stores/ScreenStore";
+
+import GridView from "@/components/Files/GridView.vue";
+import ListView from "@/components/Files/ListView.vue";
+import Dialog from "@/components/Modal.vue";
+
+const fileStore = useFileStore();
+const screenStore = useScreenStore();
+
+const viewMode = ref("grid");
+const loading = ref(true);
+const dialog = ref(null);
+let input = ref(null);
+let tempFile = ref(null);
+
+const files = computed(() => fileStore.files);
+const isValid = computed(() => tempFile.value.trim() !== "");
+
+let modalConfig = ref({
+	title: "",
+	form: false,
+	file: null,
+	message: "",
+	button: "",
+	action: "",
+});
+
+function openModal(action, file) {
+	const config = {
+		rename: {
+			title: "Rename file",
+			form: true,
+			button: "Rename",
+			action: "rename",
+		},
+		delete: {
+			title: "Delete file",
+			form: false,
+			message: `"${file.name}" will be deleted <strong>forever</strong>, are you sure?`,
+			button: "Delete forever",
+			action: "delete",
+		},
+	};
+
+	modalConfig.value = {
+		...config[action],
+		file: {
+			id: file.id,
+			name: file.name,
+		},
+	};
+	tempFile.value = modalConfig.value.file.name;
+	dialog.value.show();
+}
+
+async function handleConfirm() {
+	if (modalConfig.value.form) {
+		if (isValid.value) {
+			modalConfig.value.file.name = tempFile.value;
+
+			await fileStore.renameFile(modalConfig.value.file.id, modalConfig.value.file.name);
+			dialog.value.hide();
+		}
+	} else {
+		await fileStore.deleteFile(modalConfig.value.file.i);
+		dialog.value.hide();
+	}
+}
+
+onMounted(async () => {
+	dialog.value = new Modal(document.getElementById("fileItem"), {});
+
+	await fileStore.fetchFiles();
+	loading.value = false;
+
+	dialog.value._element.addEventListener("shown.bs.modal", () => {
+		if (input.value) {
+			input.value.focus();
+			input.value.select();
+		}
+	});
+});
+</script>
 
 <style scoped>
 .path {
