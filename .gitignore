@@ -1,2 +1,8 @@
 node_modules
 package-lock.json
+
+# Client & Server
+*/node_modules
+*/package-lock.json
+
+.vscode
