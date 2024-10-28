@@ -1,5 +1,5 @@
 {
-	"name": "file-management-system",
+	"name": "file-management-system-server",
 	"version": "1.0.0",
 	"description": "",
 	"main": "server.js",

@@ -12,12 +12,39 @@ A full-stack File Management System application originally created for a technic
 
 ## Installation
 
-To set up the application, follow the installation instructions provided in the respective client and server READMEs.
+To run the project locally, follow these steps:
 
-### Client Side
+### Prerequisites
 
-[Installation Instructions](client/README.md#installation)
+-   [Node.js](https://nodejs.org/en/download/prebuilt-installer)
+-   [MySQL](https://dev.mysql.com/doc/refman/5.7/en/installing.html)
 
-### Server Side
+### Setup
 
-[Installation Instructions](server/README.md#installation)
+1. Clone the repository
+
+```bash
+  https://github.com/zhon12345/File-Management-System.git
+```
+
+2. Navigate to the project directory
+
+```bash
+  cd File-Management-System
+```
+
+3. Install dependencies:
+
+```bash
+  npm run install-all
+```
+
+4. Update the MySQL config in `server/app/config/db.config.js` accordingly.
+
+5. Start the project:
+
+```bash
+  npm start
+```
+
+6. The client will run on `http://localhost:5173` while the server will run on `http://localhost:8080` by default.
