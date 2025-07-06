@@ -120,7 +120,7 @@ async function handleConfirm() {
 			dialog.value.hide();
 		}
 	} else {
-		await fileStore.deleteFile(modalConfig.value.file.i);
+		await fileStore.deleteFile(modalConfig.value.file.id);
 		dialog.value.hide();
 	}
 }
