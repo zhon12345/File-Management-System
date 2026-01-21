@@ -1,15 +1,15 @@
-const dbConfig = require("../config/db.config.js");
 const { Sequelize } = require("sequelize");
+const { DB_NAME, DB_HOST, DB_USER, DB_PASSWORD } = process.env;
 
-const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
-	host: dbConfig.HOST,
-	dialect: dbConfig.dialect,
-	timezone: dbConfig.timezone,
+const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
+	host: DB_HOST,
+	dialect: "mysql",
+	timezone: "+08:00",
 	pool: {
-		max: dbConfig.pool.max,
-		min: dbConfig.pool.min,
-		acquire: dbConfig.pool.acquire,
-		idle: dbConfig.pool.idle,
+		max: 5,
+		min: 0,
+		acquire: 30000,
+		idle: 10000,
 	},
 });
 
