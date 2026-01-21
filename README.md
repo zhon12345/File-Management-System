@@ -6,9 +6,9 @@ A full-stack File Management System application originally created for a technic
 
 ## Technologies Used
 
--   **Front-End:** Vue.js, Vue-Router, Pinia, Axios, Bootstrap
--   **Back-End:** Node.js, Express.js, Multer
--   **Database:** MySQL
+- **Front-End:** Vue.js, Vue-Router, Pinia, Axios, Bootstrap
+- **Back-End:** Node.js, Express.js, Multer, Docker
+- **Database:** MySQL
 
 ## Installation
 
@@ -16,15 +16,15 @@ To run the project locally, follow these steps:
 
 ### Prerequisites
 
--   [Node.js](https://nodejs.org/en/download/prebuilt-installer)
--   [MySQL](https://dev.mysql.com/doc/refman/5.7/en/installing.html)
+- [Node.js](https://nodejs.org/en/download/prebuilt-installer)
+- [Docker](https://docs.docker.com/desktop/setup/install/windows-install/)
 
 ### Setup
 
 1. Clone the repository
 
 ```bash
-  https://github.com/zhon12345/File-Management-System.git
+  git clone  https://github.com/zhon12345/File-Management-System.git
 ```
 
 2. Navigate to the project directory
@@ -33,13 +33,13 @@ To run the project locally, follow these steps:
   cd File-Management-System
 ```
 
-3. Install dependencies:
+3. Rename `.env.example` to `.env` and configure environment variables.
+
+4. Install dependencies:
 
 ```bash
   npm run install-all
 ```
-
-4. Update the MySQL config in `server/app/config/db.config.js` accordingly.
 
 5. Start the project:
 
