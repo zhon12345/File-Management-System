@@ -154,24 +154,32 @@ exports.delete = async (req, res) => {
 	try {
 		const file = await File.findOne({ where: { id: id } });
 		if (!file) {
-			res.status(404).send({
+			return res.status(404).send({
 				message: "File not found.",
 			});
 		}
 
-		await fs.unlink(file.path);
+		const deleteFile = fs.rm(file.path, { force: true });
+		const deleteRecord = File.destroy({ where: { id: file.id } });
 
-		const num = await File.destroy({ where: { id: id } });
+		const [fileResult, recordResult] = await Promise.allSettled([deleteFile, deleteRecord]);
 
-		if (num === 1) {
-			res.send({
+		if (fileResult.status === "rejected") {
+			throw new Error(fileResult.reason);
+		}
+
+		if (recordResult.status === "rejected") {
+			throw new Error(recordResult.reason);
+		}
+
+		if (recordResult.value === 1) {
+			return res.status(200).send({
 				message: `Successfully deleted ${file.name}${file.ext}`,
 			});
-		} else {
-			res.status(404).send({
-				message: "File not found.",
-			});
 		}
+		res.status(500).send({
+			message: `Could not delete ${file.name}${file.ext}.`,
+		});
 	} catch (err) {
 		res.status(500).send({
 			message: `Error deleting file: ${err.message}`,
