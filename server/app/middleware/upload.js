@@ -2,7 +2,9 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const util = require("util");
-const maxSize = 512 * 1024 * 1024;
+const crypto = require("crypto");
+
+const MAX_FILE_SIZE = 512 * 1024 * 1024;
 
 let storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -14,15 +16,15 @@ let storage = multer.diskStorage({
 		cb(null, dir);
 	},
 	filename: (req, file, cb) => {
-		const name = path.parse(file.originalname).name;
+		const name = crypto.randomUUID();
 		const ext = path.extname(file.originalname);
-		cb(null, `${name}-${Date.now()}${ext}`);
+		cb(null, `${name}${ext}`);
 	},
 });
 
 let uploadFile = multer({
 	storage: storage,
-	limits: { fileSize: maxSize },
+	limits: { fileSize: MAX_FILE_SIZE },
 }).array("files");
 
 let uploadFileMiddleware = util.promisify(uploadFile);
