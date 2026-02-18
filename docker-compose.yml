@@ -10,7 +10,7 @@ services:
 
   server:
     build: ./server
-    command: npm run dev
+    command: node server.js
     depends_on:
       - db
     ports:
