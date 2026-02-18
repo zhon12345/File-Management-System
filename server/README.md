@@ -25,6 +25,6 @@ The server-side code for the **File Management System**. It is responsible for h
 
 - **GET** `/api/files/:id/:action`: `:id` refers to the file's ID, and `:action` is either `download` or `view`. This triggers a file download or opens it for viewing.
 
-- **PUT** `/api/files/:id/rename`: Rename a file by providing its `:id` and the new name in the request body. The filename is updated in the database.
+- **PATCH** `/api/files/:id/rename`: Rename a file by providing its `:id` and the new name in the request body. The filename is updated in the database.
 
 - **DELETE** `/api/files/:id/delete`: Permanently delete a file using its `:id`. A success or error message will confirm the result.

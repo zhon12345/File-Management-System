@@ -31,7 +31,7 @@ class FileService {
 	}
 
 	rename(id, name) {
-		return http.put(`${URL}/${id}/rename`, { name });
+		return http.patch(`${URL}/${id}/rename`, { name });
 	}
 
 	delete(id) {

@@ -124,7 +124,7 @@ exports.rename = async (req, res) => {
 	try {
 		const file = await File.findOne({ where: { id: id } });
 		if (!file) {
-			res.status(404).send({
+			return res.status(404).send({
 				message: "File not found.",
 			});
 		}
@@ -136,12 +136,6 @@ exports.rename = async (req, res) => {
 			message: `Successfully renamed ${file.name}${file.ext}`,
 		});
 	} catch (err) {
-		if (err.code === "ENOENT") {
-			return res.status(404).send({
-				message: "File not found.",
-			});
-		}
-
 		res.status(500).send({
 			message: `Error renaming file: ${err.message}`,
 		});
