@@ -1,23 +1,28 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, DataTypes) => {
 	const File = sequelize.define("file", {
+		id: {
+			type: DataTypes.UUID,
+			defaultValue: DataTypes.UUIDV4,
+			primaryKey: true,
+		},
 		name: {
-			type: Sequelize.STRING,
+			type: DataTypes.STRING,
 			allowNull: false,
 		},
 		ext: {
-			type: Sequelize.STRING,
+			type: DataTypes.STRING,
 			allowNull: false,
 		},
 		path: {
-			type: Sequelize.STRING,
+			type: DataTypes.STRING,
 			unique: true,
 			allowNull: false,
 		},
 		parent: {
-			type: Sequelize.INTEGER,
+			type: DataTypes.UUID,
 		},
 		size: {
-			type: Sequelize.INTEGER,
+			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
 	});

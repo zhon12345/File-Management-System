@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, DataTypes } = require("sequelize");
 const { DB_NAME, DB_HOST, DB_USER, DB_PASSWORD } = process.env;
 
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
@@ -18,6 +18,6 @@ const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
-db.files = require("./file.model.js")(sequelize, Sequelize);
+db.files = require("./file.model.js")(sequelize, DataTypes);
 
 module.exports = db;

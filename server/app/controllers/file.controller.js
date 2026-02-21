@@ -14,6 +14,7 @@ exports.create = async (req, res) => {
 		}
 
 		const files = req.files.map((file) => ({
+			id: file.filename,
 			name: path.parse(file.originalname).name,
 			ext: path.extname(file.originalname),
 			path: file.path,
