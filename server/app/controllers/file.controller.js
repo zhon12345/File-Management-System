@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
 				});
 			});
 
-		res.status(200).send({
+		res.status(201).send({
 			message: messages,
 			filesUploaded: files.length,
 		});
@@ -54,9 +54,11 @@ exports.create = async (req, res) => {
 
 exports.getAll = (req, res) => {
 	let fileInfos = [];
-	const query = req.query.query;
+	const { query } = req.query;
 
-	const condition = query ? { [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { ext: { [Op.like]: `%${query}%` } }] } : null;
+	const condition = query
+		? { [Op.or]: [{ name: { [Op.like]: `%${query}%` } }, { ext: { [Op.like]: `%${query}%` } }] }
+		: null;
 
 	File.findAll({ where: condition })
 		.then((files) => {
@@ -82,8 +84,8 @@ exports.getAll = (req, res) => {
 };
 
 exports.getOne = async (req, res) => {
-	const id = req.params.id;
-	const action = req.params.action;
+	const { id } = req.params;
+	const { download } = req.query;
 
 	try {
 		const file = await File.findOne({ where: { id: id } });
@@ -94,23 +96,23 @@ exports.getOne = async (req, res) => {
 		}
 
 		const absolutePath = path.resolve(file.path);
-		if (action === "download") {
-			res.download(absolutePath, `${file.name}${file.ext}`, (err) => {
+		if (download) {
+			return res.download(absolutePath, `${file.name}${file.ext}`, (err) => {
 				if (err) {
 					res.status(500).send({
 						message: `Could not download ${file.name}${file.ext}: ${err.message}`,
 					});
 				}
 			});
-		} else if (action === "view") {
-			res.sendFile(absolutePath, (err) => {
-				if (err) {
-					res.status(500).send({
-						message: `Could not view ${file.name}${file.ext}: ${err.message}`,
-					});
-				}
-			});
 		}
+
+		res.sendFile(absolutePath, (err) => {
+			if (err) {
+				res.status(500).send({
+					message: `Could not view ${file.name}${file.ext}: ${err.message}`,
+				});
+			}
+		});
 	} catch (err) {
 		res.status(500).send({
 			message: `Error retrieving file: ${err.message}`,
@@ -119,7 +121,7 @@ exports.getOne = async (req, res) => {
 };
 
 exports.rename = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 
 	try {
 		const file = await File.findOne({ where: { id: id } });
@@ -143,7 +145,7 @@ exports.rename = async (req, res) => {
 };
 
 exports.delete = async (req, res) => {
-	const id = req.params.id;
+	const { id } = req.params;
 
 	try {
 		const file = await File.findOne({ where: { id: id } });

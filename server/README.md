@@ -1,6 +1,6 @@
 # File Management System (Server Side)
 
-The server-side code for the **File Management System**. It is responsible for handling file uploads, storage, deletion, and interaction with the database. The server is built using **Node.js** and **Express**, with **MySQL** as the database.
+The server-side code for the **File Management System**. It handles file uploads, storage, deletion, and interaction with the database. The server is built using **Node.js** and **Express**, with **MySQL** as the database.
 
 ## Technologies Used
 
@@ -14,17 +14,17 @@ The server-side code for the **File Management System**. It is responsible for h
 - [ ] **Security Enhancements**: Implement authorization headers and tokens for secure API access.
 - [ ] **Folder Support:** Enable the creation and upload of folders for better organization.
 - [ ] **Preview Support:** Extend support for file previews including common formats like PDFs.
-- [ ] **Throttling and Rate Limits**: Prevent abuse by limiting number of file upload and downloads in a given time frame.
+- [ ] **Throttling and Rate Limits**: Prevent abuse by limiting number of file uploads and downloads in a given time frame.
 - [ ] **File Compression**: Automatically compress files during uploads to optimize storage usage.
 
 ## API Endpoints
 
-- **POST** `/api/files/upload`: Upload files, with the server handling validation and saving. A success or error message is returned base on the result.
+- **POST** `/api/files`: Upload file(s). The server validates and saves files. Successful uploads returns HTTP 201 with success message and the number of files uploaded.
 
-- **GET** `/api/files`: Retrieve all files or filter using `?query=` to search for matching file name or extensions.
+- **GET** `/api/files`: Retrieve all files. Use `?query=` to search by file name or extension.
 
-- **GET** `/api/files/:id/:action`: `:id` refers to the file's ID, and `:action` is either `download` or `view`. This triggers a file download or opens it for viewing.
+- **GET** `/api/files/:id/content`: Get the file content for viewing or download. To download, include the `download` query parameter. Without `download`, the file is returned for viewing.
 
-- **PATCH** `/api/files/:id/rename`: Rename a file by providing its `:id` and the new name in the request body. The filename is updated in the database.
+- **PATCH** `/api/files/:id`: Rename a file by providing the new name in the request body. The filename stored in the database is updated.
 
-- **DELETE** `/api/files/:id/delete`: Permanently delete a file using its `:id`. A success or error message will confirm the result.
+- **DELETE** `/api/files/:id`: Permanently delete a file. The file is removed from disk and its record is deleted from the database. Success or error messages are returned.

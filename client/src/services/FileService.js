@@ -9,7 +9,7 @@ const http = axios.create({
 
 class FileService {
 	upload(data) {
-		return http.post(`${URL}/upload`, data);
+		return http.post(`${URL}`, data);
 	}
 
 	getAll() {
@@ -21,21 +21,21 @@ class FileService {
 	}
 
 	download(id) {
-		return http.get(`${URL}/${id}/download`, {
+		return http.get(`${URL}/${id}/content?download`, {
 			responseType: "blob",
 		});
 	}
 
 	view(id) {
-		return `${baseURL}${URL}/${id}/view`;
+		return `${baseURL}${URL}/${id}/content`;
 	}
 
 	rename(id, name) {
-		return http.patch(`${URL}/${id}/rename`, { name });
+		return http.patch(`${URL}/${id}`, { name });
 	}
 
 	delete(id) {
-		return http.delete(`${URL}/${id}/delete`);
+		return http.delete(`${URL}/${id}`);
 	}
 }
 
