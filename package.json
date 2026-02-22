@@ -3,12 +3,21 @@
 	"version": "1.0.0",
 	"description": "",
 	"scripts": {
+		"format": "prettier --write .",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix",
 		"start": "conc \"docker compose up\" \"npm run dev --prefix ./client\"",
 		"install-all": "npm i && npm i --prefix ./client && docker compose build server"
 	},
 	"author": "zhon12345",
 	"license": "ISC",
 	"devDependencies": {
-		"concurrently": "^9.0.1"
+		"@eslint/js": "^10.0.1",
+		"concurrently": "^9.0.1",
+		"eslint": "^10.0.1",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-vue": "^10.8.0",
+		"globals": "^17.3.0",
+		"prettier": "3.8.1"
 	}
 }
