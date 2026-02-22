@@ -8,11 +8,31 @@
 			</nav>
 
 			<div>
-				<div :class="['btn-group', { 'btn-group-sm': screenStore.isMobile }]" role="group" aria-label="Grid and List view toggle">
-					<input type="radio" class="btn-check" name="View Toggle" id="grid" autocomplete="off" v-model="viewMode" value="grid" />
+				<div
+					:class="['btn-group', { 'btn-group-sm': screenStore.isMobile }]"
+					role="group"
+					aria-label="Grid and List view toggle"
+				>
+					<input
+						id="grid"
+						v-model="viewMode"
+						type="radio"
+						class="btn-check"
+						name="View Toggle"
+						autocomplete="off"
+						value="grid"
+					/>
 					<label for="grid" class="btn btn-outline-primary"> <i class="bi bi-grid-fill"></i> Grid </label>
 
-					<input type="radio" class="btn-check" name="View Toggle" id="list" autocomplete="off" v-model="viewMode" value="list" />
+					<input
+						id="list"
+						v-model="viewMode"
+						type="radio"
+						class="btn-check"
+						name="View Toggle"
+						autocomplete="off"
+						value="list"
+					/>
 					<label for="list" class="btn btn-outline-primary"> <i class="bi bi-list-task"></i> List </label>
 				</div>
 			</div>
@@ -28,7 +48,7 @@
 				<span>No Files Found...</span>
 			</div>
 
-			<component v-else :is="viewMode === 'grid' ? GridView : ListView" :files="files" :action="openModal" />
+			<component :is="viewMode === 'grid' ? GridView : ListView" v-else :files="files" :action="openModal" />
 		</div>
 
 		<Dialog id="fileItem">
@@ -38,22 +58,34 @@
 
 			<template #body>
 				<div v-if="modalConfig.form">
-					<input v-model="tempFile" class="form-control" type="text" ref="input" :class="{ 'is-invalid': !isValid }" />
+					<input ref="input" v-model="tempFile" class="form-control" type="text" :class="{ 'is-invalid': !isValid }" />
 				</div>
 
+				<!-- eslint-disable-next-line vue/no-v-html -->
 				<p v-else v-html="modalConfig.message"></p>
 			</template>
 
 			<template #footer>
-				<button @click="handleConfirm()" class="btn" :class="modalConfig.action === 'delete' ? 'btn-danger' : 'btn-primary'">{{ modalConfig.button }}</button>
+				<button
+					class="btn"
+					:class="modalConfig.action === 'delete' ? 'btn-danger' : 'btn-primary'"
+					@click="handleConfirm()"
+				>
+					{{ modalConfig.button }}
+				</button>
 			</template>
 		</Dialog>
 	</section>
 </template>
 
 <script setup>
+defineOptions({
+	name: "AppHome",
+});
+
 import { ref, onMounted, computed } from "vue";
 import { Modal } from "bootstrap";
+import DOMpurify from "dompurify";
 
 import { useFileStore } from "@/stores/FileStore";
 import { useScreenStore } from "@/stores/ScreenStore";
@@ -68,13 +100,13 @@ const screenStore = useScreenStore();
 const viewMode = ref("grid");
 const loading = ref(true);
 const dialog = ref(null);
-let input = ref(null);
-let tempFile = ref(null);
+const input = ref(null);
+const tempFile = ref(null);
 
 const files = computed(() => fileStore.files);
 const isValid = computed(() => tempFile.value.trim() !== "");
 
-let modalConfig = ref({
+const modalConfig = ref({
 	title: "",
 	form: false,
 	file: null,
@@ -94,7 +126,7 @@ function openModal(action, file) {
 		delete: {
 			title: "Delete file",
 			form: false,
-			message: `"${file.name}" will be deleted <strong>forever</strong>, are you sure?`,
+			message: DOMpurify.sanitize(`"${file.name}" will be deleted <strong>forever</strong>, are you sure?`),
 			button: "Delete forever",
 			action: "delete",
 		},

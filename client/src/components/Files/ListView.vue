@@ -3,7 +3,7 @@
 		<thead>
 			<tr>
 				<th class="col-name">Name</th>
-				<th v-if="!isMobile" class="col-modified">Last Modified</th>
+				<th v-if="!screenStore.isMobile" class="col-modified">Last Modified</th>
 				<th class="col-size">Size</th>
 				<th class="col-option text-end">
 					<i class="bi bi-three-dots-vertical"></i>
@@ -11,20 +11,20 @@
 			</tr>
 		</thead>
 		<tbody class="table-group-divider">
-			<tr v-for="file in files">
+			<tr v-for="file in files" :key="file.id">
 				<td class="col-name content">
 					<div class="d-flex align-items-center">
 						<i :class="getPreview(file, 'list')" class="bi"></i>
 						<div class="text">
 							<p class="title text-truncate">{{ file.name }}{{ file.ext }}</p>
-							<small v-if="isMobile" class="subtitle">Modified {{ formatDate(file.updated, true) }}</small>
+							<small v-if="screenStore.isMobile" class="subtitle">Modified {{ formatDate(file.updated, true) }}</small>
 						</div>
 					</div>
 				</td>
-				<td v-if="!isMobile" class="col-modified content">{{ formatDate(file.updated) }}</td>
+				<td v-if="!screenStore.isMobile" class="col-modified content">{{ formatDate(file.updated) }}</td>
 				<td class="col-size content">{{ calcSize(file.size) }}</td>
 				<td class="col-option content dropdown text-end">
-					<FileItem :file="file" :openModal="action"></FileItem>
+					<FileItem :file="file" :open-modal="action"></FileItem>
 				</td>
 			</tr>
 		</tbody>
@@ -32,12 +32,23 @@
 </template>
 
 <script setup>
-import { isMobile, getPreview, formatDate, calcSize } from "@/utils/fileUtils";
+import { getPreview, formatDate, calcSize } from "@/utils/fileUtils";
+import { useScreenStore } from "@/stores/ScreenStore";
 import FileItem from "@/components/Files/FileItem.vue";
 
-const props = defineProps({
-	files: Array,
-	action: Function,
+const screenStore = useScreenStore();
+
+defineProps({
+	files: {
+		type: Array,
+		default() {
+			return [];
+		},
+	},
+	action: {
+		type: Function,
+		default: null,
+	},
 });
 </script>
 

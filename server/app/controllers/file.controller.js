@@ -1,4 +1,3 @@
-const uploadFile = require("../middleware/upload");
 const db = require("../models");
 const File = db.files;
 const Op = db.Sequelize.Op;
@@ -7,8 +6,6 @@ const fs = require("fs").promises;
 
 exports.create = async (req, res) => {
 	try {
-		await uploadFile(req, res);
-
 		if (!req.files || req.files.length === 0) {
 			return res.status(400).send({ message: "No files selected." });
 		}
@@ -54,7 +51,7 @@ exports.create = async (req, res) => {
 };
 
 exports.getAll = (req, res) => {
-	let fileInfos = [];
+	const fileInfos = [];
 	const { query } = req.query;
 
 	const condition = query
@@ -132,7 +129,7 @@ exports.rename = async (req, res) => {
 			});
 		}
 
-		let name = path.parse(req.body.name).name;
+		const name = path.parse(req.body.name).name;
 		await File.update({ name: name }, { where: { id: id } });
 
 		res.status(200).send({

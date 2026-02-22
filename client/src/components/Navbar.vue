@@ -1,29 +1,50 @@
 <template>
 	<nav class="navbar navbar-expand-lg sticky-top">
 		<div class="container">
-			<router-link :to="{ name: 'home' }" class="navbar-brand text-truncate user-select-none">File Management System</router-link>
+			<router-link :to="{ name: 'home' }" class="navbar-brand text-truncate user-select-none">
+				File Management System
+			</router-link>
 
 			<div class="collapse navbar-collapse">
 				<div class="search input-group">
-					<input v-model="query" @keypress.enter="search" class="form-control" type="search" placeholder="Search" aria-label="Search" :disabled="disabled" />
-					<button @click="search" class="btn btn-outline-primary" type="button" :disabled="disabled">
+					<input
+						v-model="query"
+						class="form-control"
+						type="search"
+						placeholder="Search"
+						aria-label="Search"
+						:disabled="disabled"
+						@keypress.enter="search"
+					/>
+					<button class="btn btn-outline-primary" type="button" :disabled="disabled" @click="search">
 						<i class="bi bi-search"></i>
 					</button>
 				</div>
 			</div>
 
 			<div class="dropdown">
-				<button :class="['btn btn-primary dropdown-toggle', { 'btn-sm': screenStore.isMobile }]" data-bs-toggle="dropdown" aria-expanded="false" :disabled="disabled"><i class="bi bi-plus-lg"></i> New</button>
+				<button
+					:class="['btn btn-primary dropdown-toggle', { 'btn-sm': screenStore.isMobile }]"
+					data-bs-toggle="dropdown"
+					aria-expanded="false"
+					:disabled="disabled"
+				>
+					<i class="bi bi-plus-lg"></i> New
+				</button>
 				<ul class="dropdown-menu dropdown-menu-end">
-					<li><button @click="dialog.show" class="dropdown-item disabled" aria-disabled="true">Folder</button></li>
+					<li><button class="dropdown-item disabled" aria-disabled="true" @click="dialog.show">Folder</button></li>
 
 					<li><hr class="dropdown-divider" /></li>
 
-					<input @change="uploadFile" ref="file" type="file" multiple hidden />
-					<input @change="uploadFolder" ref="folder" type="file" webkitdirectory hidden />
+					<input ref="file" type="file" multiple hidden @change="uploadFile" />
+					<input ref="folder" type="file" webkitdirectory hidden @change="uploadFolder" />
 
-					<li><button @click="$refs.file.click()" class="dropdown-item">File Upload</button></li>
-					<li><button @click="$refs.folder.click()" class="dropdown-item disabled" aria-disabled="true">Folder Upload</button></li>
+					<li><button class="dropdown-item" @click="$refs.file.click()">File Upload</button></li>
+					<li>
+						<button class="dropdown-item disabled" aria-disabled="true" @click="$refs.folder.click()">
+							Folder Upload
+						</button>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -39,7 +60,7 @@
 		</template>
 
 		<template #footer>
-			<button @click="newFolder" class="btn btn-primary">Create</button>
+			<button class="btn btn-primary" @click="newFolder">Create</button>
 		</template>
 	</Dialog>
 </template>
@@ -56,14 +77,18 @@ import Dialog from "@/components/Modal.vue";
 const fileStore = useFileStore();
 const screenStore = useScreenStore();
 
-const props = defineProps({
+defineOptions({
+	name: "AppNavbar",
+});
+
+defineProps({
 	disabled: { type: Boolean, default: false },
 });
 
 const dialog = ref(null);
 const query = ref("");
 const input = ref("");
-let valid = ref(true);
+const valid = ref(true);
 
 async function uploadFile(event) {
 	const files = event.target.files;
@@ -91,7 +116,7 @@ async function search() {
 
 function newFolder() {
 	if (valid.value) {
-		//Do something
+		// Do something
 
 		dialog.value.hide();
 	}

@@ -1,17 +1,24 @@
 <template>
 	<div class="row row-cols-lg-5 row-cols-md-3 row-cols-2 gx-3">
-		<div v-for="file in files" class="col">
+		<div v-for="file in files" :key="file.id" class="col">
 			<div class="ratio ratio-1x1">
 				<div class="card shadow-sm bg-body-secondary">
 					<div class="card-body">
 						<p class="card-text text-truncate user-select-none">{{ file.name }}{{ file.ext }}</p>
 						<div class="dropdown">
-							<FileItem :file="file" :openModal="action"></FileItem>
+							<FileItem :file="file" :open-modal="action"></FileItem>
 						</div>
 					</div>
 
 					<div class="card-img" :class="{ 'is-icon': !isImage(file) || !imageLoaded }">
-						<img v-if="isImage(file) && imageLoaded" class="card-img-top card-img-bottom user-select-none" draggable="false" :src="getPreview(file, 'grid', imageLoaded)" @load="imageLoaded = true" @error="imageLoaded = false" />
+						<img
+							v-if="isImage(file) && imageLoaded"
+							class="card-img-top card-img-bottom user-select-none"
+							draggable="false"
+							:src="getPreview(file, 'grid', imageLoaded)"
+							@load="imageLoaded = true"
+							@error="imageLoaded = false"
+						/>
 						<i v-else :class="getPreview(file, 'grid', imageLoaded)" class="bi"></i>
 					</div>
 				</div>
@@ -21,12 +28,23 @@
 </template>
 
 <script setup>
-import { imageLoaded, isImage, getPreview } from "@/utils/fileUtils";
+import { ref } from "vue";
+import { isImage, getPreview } from "@/utils/fileUtils";
 import FileItem from "@/components/Files/FileItem.vue";
 
-const props = defineProps({
-	files: Array,
-	action: Function,
+const imageLoaded = ref(true);
+
+defineProps({
+	files: {
+		type: Array,
+		default() {
+			return [];
+		},
+	},
+	action: {
+		type: Function,
+		default: null,
+	},
 });
 </script>
 

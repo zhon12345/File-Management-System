@@ -1,6 +1,6 @@
 <template>
 	<teleport to="body">
-		<div class="modal fade" :id="props.id" tabindex="-1" aria-hidden="true">
+		<div :id="id" class="modal fade" tabindex="-1" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -22,8 +22,17 @@
 </template>
 
 <script setup>
-const props = defineProps({
-	id: String,
+defineOptions({
+	name: "BaseModal",
+});
+
+defineProps({
+	id: {
+		type: String,
+		default() {
+			return "";
+		},
+	},
 });
 </script>
 

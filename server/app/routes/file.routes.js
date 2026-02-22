@@ -1,10 +1,11 @@
 const express = require("express");
+const upload = require("../middleware/upload");
 const files = require("../controllers/file.controller");
 const router = express.Router();
 const URL = "/api/files";
 
-let routes = (app) => {
-	router.post("/", files.create);
+const routes = (app) => {
+	router.post("/", upload, files.create);
 	router.get("/", files.getAll);
 	router.get("/:id/content", files.getOne);
 	router.patch("/:id", files.rename);

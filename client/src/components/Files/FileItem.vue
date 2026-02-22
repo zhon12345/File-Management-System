@@ -1,18 +1,26 @@
 <template>
 	<i class="bi bi-three-dots-vertical dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"></i>
 	<ul class="dropdown-menu">
-		<li><button @click="downloadFile(file)" class="dropdown-item">Download</button></li>
-		<li><button @click="openModal('rename', file)" class="dropdown-item">Rename</button></li>
-		<li><button @click="openModal('delete', file)" class="dropdown-item">Delete</button></li>
+		<li><button class="dropdown-item" @click="downloadFile(file)">Download</button></li>
+		<li><button class="dropdown-item" @click="openModal('rename', file)">Rename</button></li>
+		<li><button class="dropdown-item" @click="openModal('delete', file)">Delete</button></li>
 	</ul>
 </template>
 
 <script setup>
 import { useFileStore } from "@/stores/FileStore";
 
-const props = defineProps({
-	file: Object,
-	openModal: Function,
+defineProps({
+	file: {
+		type: Object,
+		default() {
+			return {};
+		},
+	},
+	openModal: {
+		type: Function,
+		default: null,
+	},
 });
 
 const fileStore = useFileStore();
