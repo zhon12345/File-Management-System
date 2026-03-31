@@ -14,11 +14,7 @@
 						placeholder="Search"
 						aria-label="Search"
 						:disabled="disabled"
-						@keypress.enter="search"
 					/>
-					<button class="btn btn-outline-primary" type="button" :disabled="disabled" @click="search">
-						<i class="bi bi-search"></i>
-					</button>
 				</div>
 			</div>
 
@@ -66,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from "vue";
+import { ref, watch, onMounted, onUnmounted } from "vue";
 import { Modal } from "bootstrap";
 
 import { useFileStore } from "@/stores/FileStore";
@@ -89,6 +85,7 @@ const dialog = ref(null);
 const query = ref("");
 const input = ref("");
 const valid = ref(true);
+let debounceTimer = null;
 
 async function uploadFile(event) {
 	const files = event.target.files;
@@ -106,9 +103,9 @@ async function uploadFolder() {
 	// Do something
 }
 
-async function search() {
-	if (query.value.trim()) {
-		await fileStore.searchFiles(query.value);
+async function search(value) {
+	if (value.trim()) {
+		await fileStore.searchFiles(value);
 	} else {
 		await fileStore.fetchFiles();
 	}
@@ -126,6 +123,13 @@ watch(input, (value) => {
 	valid.value = value.trim() !== "";
 });
 
+watch(query, (value) => {
+	if (debounceTimer) clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(async () => {
+		await search(value);
+	}, 500);
+});
+
 onMounted(() => {
 	dialog.value = new Modal(document.getElementById("newFolder"), {});
 
@@ -133,6 +137,10 @@ onMounted(() => {
 		input.value = "";
 		valid.value = true;
 	});
+});
+
+onUnmounted(() => {
+	if (debounceTimer) clearTimeout(debounceTimer);
 });
 </script>
 
