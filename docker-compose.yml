@@ -9,7 +9,9 @@ services:
       - ./.env
 
   server:
-    build: ./server
+    build:
+      context: ./server
+      target: production
     command: node server.js
     depends_on:
       - db
